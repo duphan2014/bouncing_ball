@@ -1,6 +1,17 @@
 #include <SDL2/SDL.h>
 #include <stdio.h>
 
+// Function to draw a filled circle
+void SDL_RenderFillCircle(SDL_Renderer *renderer, int cx, int cy, int radius) {
+  for (int w = -radius; w <= radius; w++) {
+    for (int h = - radius; h <= radius; h++) {
+      if (w*w + h*h <= radius*radius) {
+        SDL_RenderDrawPoint(renderer, cx + w, cy + h);
+      }
+    }
+  }
+}
+
 int main(int argc, char* argv[]) {
   //Initialize SDL
   if (SDL_Init(SDL_INIT_VIDEO) < 0) {
@@ -35,9 +46,10 @@ int main(int argc, char* argv[]) {
   SDL_Event e;
 
   // Square properties
-  SDL_Rect rect = {200, 150, 50, 50}; // x, y, width, height
-  int vx = 4; // orizontal speed
-  int vy = 4; // vertical speed
+  int cx = 200, cy = 150; // center
+  int radius = 25;
+  int vx = 1; // orizontal speed
+  int vy = 1; // vertical speed
 
   while (running) {
     // Handle events
@@ -48,15 +60,15 @@ int main(int argc, char* argv[]) {
     }
 
     // update square position
-    rect.x += vx;
-    rect.y += vy;
+    cx += vx;
+    cy += vy;
 
     // bounce off walls
-    if (rect.x <= 0 || rect.x + rect.w >= winWidth) {
+    if (cx - radius <= 0 || cx + radius >= winWidth) {
       vx = -vx;
     }
 
-    if (rect.y <= 0 || rect.y + rect.h >= winHeight) {
+    if (cy - radius <= 0 || cy + radius >= winHeight) {
       vy = -vy;
     }
 
@@ -66,7 +78,7 @@ int main(int argc, char* argv[]) {
 
     // Draw a red rectangle
     SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
-    SDL_RenderFillRect(renderer, &rect);
+    SDL_RenderFillCircle(renderer, cx, cy, radius);
 
     // Show what we've drawn
     SDL_RenderPresent(renderer);
