@@ -48,8 +48,8 @@ int main(int argc, char* argv[]) {
   // Square properties
   int cx = 200, cy = 150; // center
   int radius = 25;
-  int vx = 1; // orizontal speed
-  int vy = 1; // vertical speed
+  int vx = 4; // orizontal speed
+  int vy = 4; // vertical speed
 
   while (running) {
     // Handle events
@@ -76,9 +76,21 @@ int main(int argc, char* argv[]) {
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
     SDL_RenderClear(renderer);
 
-    // Draw a red rectangle
+    // Draw a red rectangle shiny
     SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
     SDL_RenderFillCircle(renderer, cx, cy, radius);
+
+    // Draw highlight (smaller white circle)
+    SDL_SetRenderDrawColor(renderer, 255, 250, 250, 200); // semi-transparent
+    SDL_RenderFillCircle(renderer, cx - radius/3, cy - radius/3, radius/4);
+
+    /*
+    for (int r = radius; r > 0; r=r-5) {
+        int brightness = 255 * r / radius; // fade color
+        SDL_SetRenderDrawColor(renderer, brightness, 0, 0, 255);
+        SDL_RenderFillCircle(renderer, cx, cy, r);
+    }
+    */
 
     // Show what we've drawn
     SDL_RenderPresent(renderer);
