@@ -8,6 +8,28 @@
 
 #include <stdio.h>
 
+typedef struct {
+  int x, y;
+  int vx, vy;
+  int radius;
+  Uint8 r, g, b; // Color components
+} Ball;
+
+typedef struct {
+    int x, y;
+    int width, height;
+    int speed;
+} Platform;
+
+#define NUM_BALLS 5
+Ball balls[NUM_BALLS] = {
+    {100, 100, 3, 2, 20, 250, 0, 0},
+    {200, 150, -2, 3, 20, 250, 0, 0},
+    {300, 200, 4, -3, 20, 0, 250, 0},
+    {400, 250, -3, -2, 20, 0, 250, 0},
+    {500, 300, 2, 4, 20, 0, 0 , 250}
+};
+
 // Function to draw a filled circle
 void SDL_RenderFillCircle(SDL_Renderer *renderer, int cx, int cy, int radius) {
   for (int w = -radius; w <= radius; w++) {
@@ -26,8 +48,11 @@ int main(int argc, char* argv[]) {
     return 1;
   }
 
-  const int winWidth = 640;
-  const int winHeight = 480;
+  const int winWidth = 1024; //640;
+  const int winHeight = 768; //480;
+
+  // initialize platform
+  Platform platform = { winWidth / 2 - 50, winHeight - 30, 100, 15, 16 };
 
   // Create a window
   SDL_Window* window = SDL_CreateWindow("Basic Graphics in C",
@@ -52,12 +77,6 @@ int main(int argc, char* argv[]) {
   int running = 1;
   SDL_Event e;
 
-  // Square properties
-  int cx = 200, cy = 150; // center
-  int radius = 25;
-  int vx = 4; // orizontal speed
-  int vy = 4; // vertical speed
-
   while (running) {
     // Handle events
     while (SDL_PollEvent(&e)) {
@@ -66,38 +85,84 @@ int main(int argc, char* argv[]) {
       }
     }
 
-    // update square position
-    cx += vx;
-    cy += vy;
-
-    // bounce off walls
-    if (cx - radius <= 0 || cx + radius >= winWidth) {
-      vx = -vx;
+    //keyboard handling
+    const Uint8 *keystate = SDL_GetKeyboardState(NULL);
+    if (keystate[SDL_SCANCODE_LEFT]) {
+      platform.x -= platform.speed;
+    }
+    
+    if (keystate[SDL_SCANCODE_RIGHT]) {
+      platform.x += platform.speed;
     }
 
-    if (cy - radius <= 0 || cy + radius >= winHeight) {
-      vy = -vy;
+    // Keep platform within window bounds
+    if (platform.x < 0) platform.x = 0;
+    if (platform.x + platform.width > winWidth) platform.x = winWidth - platform.width;
+
+    // Wall collision
+    for (int i = 0; i < NUM_BALLS; i++){
+      balls[i].x += balls[i].vx;
+      balls[i].y += balls[i].vy;
+
+      // Wall collision - can bounce off side walls and top
+      if (balls[i].x - balls[i].radius <= 0 || balls[i].x + balls[i].radius >= winWidth) {
+          balls[i].vx = -balls[i].vx;
+      }
+
+      if (balls[i].y - balls[i].radius <= 0 || balls[i].y + balls[i].radius >= winHeight) {
+          balls[i].vy = -balls[i].vy;
+      }
+
+      // Platform collision
+      if (balls[i].y + balls[i].radius >= platform.y &&
+          balls[i].x >= platform.x &&
+          balls[i].x <= platform.x + platform.width &&
+          balls[i].y + balls[i].radius <= platform.y + platform.height) {
+            balls[i].vy = -balls[i].vy;
+            balls[i].y = platform.y - balls[i].radius; // prevent sticking
+      }
+    }
+
+    // Balls collision
+    for (int i = 0; i < NUM_BALLS; i++) {
+        for (int j = i + 1; j < NUM_BALLS; j++) {
+            int dx = balls[i].x - balls[j].x;
+            int dy = balls[i].y - balls[j].y;
+            int distanceSq = dx * dx + dy * dy;
+            int radiusSum = balls[i].radius + balls[j].radius;
+
+            if (distanceSq <= radiusSum * radiusSum) {
+                // Simple velocity swap
+                int tempVx = balls[i].vx;
+                int tempVy = balls[i].vy;
+                balls[i].vx = balls[j].vx;
+                balls[i].vy = balls[j].vy;
+                balls[j].vx = tempVx;
+                balls[j].vy = tempVy;
+            }
+        }
     }
 
     // Set background color (R,G,B,A)
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
     SDL_RenderClear(renderer);
 
-    // Draw a red rectangle shiny
-    SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
-    SDL_RenderFillCircle(renderer, cx, cy, radius);
+    // Draw all balls
+    for (int i = 0; i < NUM_BALLS; i++) {
+        //big circle
+        SDL_SetRenderDrawColor(renderer, balls[i].r, balls[i].g, balls[i].b, 255);
+        SDL_RenderFillCircle(renderer, balls[i].x, balls[i].y, balls[i].radius);
 
-    // Draw highlight (smaller white circle)
-    SDL_SetRenderDrawColor(renderer, 255, 250, 250, 200); // semi-transparent
-    SDL_RenderFillCircle(renderer, cx - radius/3, cy - radius/3, radius/4);
-
-    /*
-    for (int r = radius; r > 0; r=r-5) {
-        int brightness = 255 * r / radius; // fade color
-        SDL_SetRenderDrawColor(renderer, brightness, 0, 0, 255);
-        SDL_RenderFillCircle(renderer, cx, cy, r);
+        //small circle
+        SDL_SetRenderDrawColor(renderer, balls[i].r-100, balls[i].g-100, balls[i].b-100, 200);
+        SDL_RenderFillCircle(renderer, balls[i].x - balls[i].radius/3, balls[i].y - balls[i].radius/3, balls[i].radius/4);
     }
-    */
+
+    // draw platform
+    SDL_SetRenderDrawColor(renderer, 0, 255, 255, 255); // Cyan
+    SDL_Rect rect = { platform.x, platform.y, platform.width, platform.height };
+    SDL_RenderFillRect(renderer, &rect);
+
 
     // Show what we've drawn
     SDL_RenderPresent(renderer);
