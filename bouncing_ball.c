@@ -1,4 +1,11 @@
+#if defined(__APPLE__)
+#include <SDL.h>
+#elif defined(__linux__)
 #include <SDL2/SDL.h>
+#else
+#error "Unsupported platform"
+#endif
+
 #include <stdio.h>
 
 // Function to draw a filled circle
