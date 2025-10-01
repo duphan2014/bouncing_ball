@@ -19,6 +19,8 @@ typedef struct {
     int x, y;
     int width, height;
     int speed;
+    int bendOffset;     // For bending effect
+    int vibrationTimer; // For vibration duration
 } Platform;
 
 #define NUM_BALLS 5
@@ -52,7 +54,7 @@ int main(int argc, char* argv[]) {
   const int winHeight = 768; //480;
 
   // initialize platform
-  Platform platform = { winWidth / 2 - 50, winHeight - 30, 100, 15, 16 };
+  Platform platform = { winWidth / 2 - 50, winHeight - 30, 100, 15, 16, 0, 0};
 
   // Create a window
   SDL_Window* window = SDL_CreateWindow("Basic Graphics in C",
@@ -99,7 +101,7 @@ int main(int argc, char* argv[]) {
     if (platform.x < 0) platform.x = 0;
     if (platform.x + platform.width > winWidth) platform.x = winWidth - platform.width;
 
-    // Wall collision
+    // collision - walls and platform
     for (int i = 0; i < NUM_BALLS; i++){
       balls[i].x += balls[i].vx;
       balls[i].y += balls[i].vy;
@@ -120,10 +122,26 @@ int main(int argc, char* argv[]) {
           balls[i].y + balls[i].radius <= platform.y + platform.height) {
             balls[i].vy = -balls[i].vy;
             balls[i].y = platform.y - balls[i].radius; // prevent sticking
+
+            //Trigger bend and vibration
+            platform.bendOffset = 5;
+            platform.vibrationTimer = 20; // frames
       }
     }
 
-    // Balls collision
+    if (platform.vibrationTimer > 0) {
+        platform.vibrationTimer--;
+
+        // Vibrate left and right
+        platform.x += (platform.vibrationTimer % 2 == 0) ? -2 : 2;
+
+        // Reduce bend gradually
+        if (platform.bendOffset > 0) {
+            platform.bendOffset--;
+        }
+    }
+
+    // collision - between balls
     for (int i = 0; i < NUM_BALLS; i++) {
         for (int j = i + 1; j < NUM_BALLS; j++) {
             int dx = balls[i].x - balls[j].x;
@@ -160,8 +178,15 @@ int main(int argc, char* argv[]) {
 
     // draw platform
     SDL_SetRenderDrawColor(renderer, 0, 255, 255, 255); // Cyan
-    SDL_Rect rect = { platform.x, platform.y, platform.width, platform.height };
+    // Simulate bend
+    SDL_Rect rect = {
+        platform.x,
+        platform.y + platform.bendOffset,
+        platform.width,
+        platform.height - platform.bendOffset
+    };
     SDL_RenderFillRect(renderer, &rect);
+
 
 
     // Show what we've drawn
