@@ -2,11 +2,14 @@
 #include <SDL.h>
 #elif defined(__linux__)
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_mixer.h>
 #else
 #error "Unsupported platform"
 #endif
 
 #include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
 
 typedef struct {
   int x, y;
@@ -44,14 +47,27 @@ void SDL_RenderFillCircle(SDL_Renderer *renderer, int cx, int cy, int radius) {
 }
 
 int main(int argc, char* argv[]) {
+  
+  srand(time(NULL));
+
   //Initialize SDL
   if (SDL_Init(SDL_INIT_VIDEO) < 0) {
     printf("SDL could not initialize! SDL_Error: %s\n", SDL_GetError());
     return 1;
   }
 
-  const int winWidth = 1024; //640;
-  const int winHeight = 768; //480;
+  if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) {
+    printf("SDL_mixer could not initialize! SDL_mixer Error: %s\n", Mix_GetError());
+    return 1;
+  }
+
+  Mix_Chunk *soundHitPlatform = Mix_LoadWAV("sound/boing_x.wav");
+  if (!soundHitPlatform) {
+    printf("Failed to load sound effect! SDL_mixer Error: %s\n", Mix_GetError());
+  }
+
+  int winWidth = 1024; //640;
+  int winHeight = 768; //480;
 
   // initialize platform
   Platform platform = { winWidth / 2 - 50, winHeight - 30, 100, 15, 16, 0, 0};
@@ -86,6 +102,32 @@ int main(int argc, char* argv[]) {
         running = 0;
       }
     }
+
+    if(e.type == SDL_KEYDOWN) {
+      // Handle Alt+Enter for fullscreen toggle
+      if(e.key.keysym.sym == SDLK_RETURN && (e.key.keysym.mod & KMOD_ALT)) {
+        // Before resizing
+        //int oldWinWidth = winWidth;
+        //int oldWinHeight = winHeight;
+        Uint32 flags = SDL_GetWindowFlags(window);
+        if (flags & SDL_WINDOW_FULLSCREEN_DESKTOP) {
+          SDL_SetWindowFullscreen(window, 0); // Windowed
+          //for (int i = 0; i < NUM_BALLS; i++) {
+            // Scale position proportionally
+          //  balls[i].x = balls[i].x * winWidth / oldWinWidth;
+          //  balls[i].y = balls[i].y * winHeight / oldWinHeight;
+          //}
+        } else {
+          SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP); //FUllscreen
+        
+        }
+      }
+      // update window size variables
+      SDL_GetWindowSize(window, &winWidth, &winHeight);
+      // Update platform position to stay at the bottom
+      platform.y = winHeight - platform.height;
+    }
+
 
     //keyboard handling
     const Uint8 *keystate = SDL_GetKeyboardState(NULL);
@@ -126,6 +168,9 @@ int main(int argc, char* argv[]) {
             //Trigger bend and vibration
             platform.bendOffset = 5;
             platform.vibrationTimer = 20; // frames
+            
+            //Play sounds
+            Mix_PlayChannel(-1, soundHitPlatform, 0);
       }
     }
 
@@ -195,6 +240,10 @@ int main(int argc, char* argv[]) {
     // Delay to control frame rate (16ms ~ 60 FPS)
     SDL_Delay(16);
   }
+
+  // clean up audio
+  Mix_FreeChunk(soundHitPlatform);
+  Mix_CloseAudio();
 
   // Clean uo
   SDL_DestroyRenderer(renderer);
