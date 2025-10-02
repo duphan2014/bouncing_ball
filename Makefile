@@ -5,7 +5,7 @@ CC = gcc
 CFLAGS = -Wall -g
 
 # Libraries to link
-LIBS = -lSDL2 -lSDL2_mixer
+LIBS = -lSDL2 -lSDL2_mixer -lSDL2_ttf
 
 # Output program name
 TARGET = bouncing_ball
