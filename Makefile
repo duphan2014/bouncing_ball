@@ -23,8 +23,10 @@ ifeq ($(UNAME_S),Linux)
     SDL_CFLAGS := 
     SDL_LIBS := $(LIBS)
 else ifeq ($(UNAME_S),Darwin)
-    SDL_CFLAGS := $(shell sdl2-config --cflags)
-    SDL_LIBS := $(shell sdl2-config --libs)
+    #SDL_CFLAGS := $(shell sdl2-config --cflags)
+    #SDL_LIBS := $(shell sdl2-config --libs)
+	SDL_CFLAGS := $(shell pkg-config --cflags sdl2 SDL2_ttf SDL2_mixer)
+    SDL_LIBS := $(shell pkg-config --libs sdl2 SDL2_ttf SDL2_mixer)
 endif
 
 # Default rule

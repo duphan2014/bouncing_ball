@@ -1,5 +1,7 @@
 #if defined(__APPLE__)
 #include <SDL.h>
+#include <SDL_ttf.h>
+#include <SDL_mixer.h>
 #elif defined(__linux__)
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_mixer.h>
@@ -88,6 +90,11 @@ int main(int argc, char* argv[]) {
     return 1;
   }
 
+  //if (SDL_Init(SDL_INIT_AUDIO) < 0) {
+  //  printf("SDL Audio could not initialize! SDL_Error: %s\n", SDL_GetError());
+  //  return 1;
+  //}
+
   // Initialize text
   if (TTF_Init() == -1) {
     printf("TTF_Init: %s\n", TTF_GetError());
@@ -150,19 +157,27 @@ int main(int argc, char* argv[]) {
   SDL_Event e;
 
   while (running) {
+    // debug currently pressed key
+    if (e.type == SDL_KEYDOWN) {
+      printf("Key pressed: %d\n", e.key.keysym.sym);
+    }
+
     // quit game when click X button
     while (SDL_PollEvent(&e)) {
       if (e.type == SDL_QUIT) {
         running = 0;
       }
     }
+
     // quit game when press escape
     if (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_ESCAPE) {
       running = 0;
     }
 
     // Start game, restart game
-    if (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_RETURN) {
+    if (e.type == SDL_KEYDOWN && 
+      //e.key.keysym.sym == SDLK_RETURN) {
+      (e.key.keysym.sym == SDLK_RETURN || e.key.keysym.sym == SDLK_KP_ENTER)) {
       if (gameState == STATE_START) {
           gameState = STATE_PLAYING;
           // Reset score, lives, balls, platform as needed
