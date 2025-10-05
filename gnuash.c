@@ -158,9 +158,9 @@ int main(int argc, char* argv[]) {
 
   while (running) {
     // debug currently pressed key
-    if (e.type == SDL_KEYDOWN) {
-      printf("Key pressed: %d\n", e.key.keysym.sym);
-    }
+    //if (e.type == SDL_KEYDOWN) {
+    //  printf("Key pressed: %d\n", e.key.keysym.sym);
+    //}
 
     // quit game when click X button
     while (SDL_PollEvent(&e)) {
@@ -377,7 +377,7 @@ int main(int argc, char* argv[]) {
     if (gameState == STATE_START) {
         SDL_Color white = {255, 255, 255};
 
-        SDL_Surface *goSurface1 = TTF_RenderText_Solid(font, "GnuSquash 1.0", white);
+        SDL_Surface *goSurface1 = TTF_RenderText_Solid(font, "Gnuash 1.0", white);
         SDL_Texture *goTexture1 = SDL_CreateTextureFromSurface(renderer, goSurface1);
         // rectangle (on the screen) to draw to - dstRect
         SDL_Rect goRect1 = {winWidth/2 - goSurface1->w/2, winHeight/2 - goSurface1->h*2, goSurface1->w, goSurface1->h};

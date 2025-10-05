@@ -8,10 +8,10 @@ CFLAGS = -Wall -g
 LIBS = -lSDL2 -lSDL2_mixer -lSDL2_ttf
 
 # Output program name
-TARGET = bouncing_ball
+TARGET = gnuash
 
 # Source files
-SRCS = bouncing_ball.c
+SRCS = gnuash.c
 
 # Object files (replace .c with .o)
 OBJS = $(SRCS:.c=.o)
