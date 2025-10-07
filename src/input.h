@@ -10,7 +10,7 @@
 #endif
 #include "game.h"
 
-void input_handle_events(struct Game *game, SDL_Event* event);
-void input_handle_keyboard(struct Game *game, const Uint8 *keystate);
+void input_handle_events(Game *game, SDL_Event *event);
+void input_handle_keyboard(Game *game, const Uint8 *keystate);
 
 #endif // INPUT_H

@@ -1,6 +1,6 @@
 #include "renderer.h"
 
-void renderer_draw_filled_circle(SDL *renderer, int cx, int cy, int radius) {
+void renderer_draw_filled_circle(SDL_Renderer *renderer, int cx, int cy, int radius) {
     for (int w = -radius; w <= radius; w++) {
         for (int h = - radius; h <= radius; h++) {
             if (w*w + h*h <= radius*radius) {
@@ -10,7 +10,7 @@ void renderer_draw_filled_circle(SDL *renderer, int cx, int cy, int radius) {
     }
 }
 
-void renderer_draw_ball(SDL_Renderer *renderer, cost Ball *ball) {
+void renderer_draw_ball(SDL_Renderer *renderer, const Ball *ball) {
     // Big circle
     SDL_SetRenderDrawColor(renderer, ball->r, ball->g, ball->b, 255);
     renderer_draw_filled_circle(renderer, ball->x, ball->y, ball->radius);
@@ -42,7 +42,7 @@ void renderer_draw_filled_heart(SDL_Renderer *renderer, int x, int y, int size) 
 }
 
 void renderer_draw_platform(SDL_Renderer *renderer, const Platform *platform){
-    SDL_SetRendererDrawColor(renderer, 0, 255, 255, 255); // Cyan
+    SDL_SetRenderDrawColor(renderer, 0, 255, 255, 255); // Cyan
     // Simulate bend
     SDL_Rect rect = {
         platform->x,

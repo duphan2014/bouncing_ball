@@ -36,7 +36,7 @@ int game_init(Game *game) {
     }
 
     // Load sounds
-    game->soundHitPlatform = audio_load_sound("sound/boing_x.wav");
+    game->soundHitPlatform = audio_load_sound("sounds/boing_x.wav");
     game->soundHitBottom = audio_load_sound("sounds/blip.wav");
     game->soundGameOver = audio_load_sound("sounds/floop2_x.wav");
 
@@ -188,7 +188,7 @@ void game_reset(Game *game) {
 void game_save_highscore(Game *game) {
     if (game->score > game->highScore) {
         game->highScore = game->score;
-        FILE *f = fopen("highscore.txt", "w");
+        FILE *f = fopen("data/highscore.txt", "w");
         if (f) {
             fprintf(f, "%d", game->highScore);
             fclose(f);
@@ -197,7 +197,7 @@ void game_save_highscore(Game *game) {
 
 }
 void game_load_highscore(Game *game) {
-    FILE *f = fopen("highscore.txt", "r");
+    FILE *f = fopen("data/highscore.txt", "r");
     if (f) {
         fscanf(f, "%d", &game->highScore);
         fclose(f);

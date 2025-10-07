@@ -60,7 +60,7 @@ void ball_handle_ball_collision(Ball balls[], int count) {
         for (int j = i + 1; j < count; j++) {
             int dx = balls[i].x - balls[j].x;
             int dy = balls[i].y - balls[j].y;
-            int distanceSq = dx * dx + dy * dy
+            int distanceSq = dx * dx + dy * dy;
             int radiusSum = balls[i].radius + balls[j].radius;
 
             if (distanceSq <= radiusSum * radiusSum) {

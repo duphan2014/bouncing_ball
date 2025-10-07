@@ -16,7 +16,7 @@ void renderer_draw_filled_circle(SDL_Renderer *renderer, int cx, int cy, int rad
 void renderer_draw_ball(SDL_Renderer *renderer, const Ball *ball);
 void renderer_draw_balls(SDL_Renderer *renderer, const Ball balls[], int count);
 
-void renderer_draw_filled_heart(SDL_renderer *renderer, int x, int y, int size);
+void renderer_draw_filled_heart(SDL_Renderer *renderer, int x, int y, int size);
 
 void renderer_draw_platform(SDL_Renderer *renderer, const Platform *platform);
 

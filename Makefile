@@ -11,7 +11,7 @@ LIBS = -lSDL2 -lSDL2_mixer -lSDL2_ttf
 TARGET = gnuash
 
 # Source files
-SRCS = gnuash.c
+SRCS = src/audio.c src/ball.c src/game.c src/input.c src/main.c src/platform.c src/renderer.c src/ui.c
 
 # Object files (replace .c with .o)
 OBJS = $(SRCS:.c=.o)
@@ -33,8 +33,9 @@ endif
 all: $(TARGET)
 
 # compile .c to .o
+# -I where to look for header file
 %.o: %.c
-	$(CC) $(CFLAGS) $(SDL_CFLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) $(SDL_CFLAGS) -c $< -o $@ -I src
 
 print-vars:
 	echo "UNAME_S = $(UNAME_S)"

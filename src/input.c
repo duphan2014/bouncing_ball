@@ -3,7 +3,7 @@
 
 void input_handle_events (Game *game, SDL_Event *event) {
     // check for one-time event from th event queue
-    while (SDL_PoolEvent(event)) {
+    while (SDL_PollEvent(event)) {
         if(event->type == SDL_QUIT) {
             game->running = 0;
         }
@@ -36,6 +36,9 @@ void input_handle_events (Game *game, SDL_Event *event) {
                 SDL_GetWindowSize(game->window, &game->winWidth, &game->winHeight);
                 // Update platform position to stay at the bottom
                 game->platform.y = game->winHeight - game->platform.height;
+                
+                // Restart position of balls, otherwise hard to change them proportionally
+                ball_init_array(game->balls, NUM_BALLS);
             }
         }
     }

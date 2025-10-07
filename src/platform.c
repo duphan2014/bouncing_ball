@@ -25,7 +25,7 @@ void platform_update(Platform *platform, int winWidth) {
 
     // Keep platform within window bounds
     if (platform->x <0) platform->x = 0;
-    if (platform->x + platform->width > winWidth) platform->x = winWidth - platform-width;
+    if (platform->x + platform->width > winWidth) platform->x = winWidth - platform->width;
 }
 
 void platform_handle_collision(Platform *platform) {

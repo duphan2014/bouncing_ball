@@ -15,7 +15,7 @@ typedef struct {
     int speed;
     int bendOffset; // for bending effect
     int vibrationTimer; // for vibration duration
-} Platform
+} Platform;
 
 //Function declarations
 void platform_init(Platform *platform, int winWidth, int winHeight);

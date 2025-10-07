@@ -41,8 +41,8 @@ typedef struct {
     int winWidth;
     int winHeight;
 
-    //Ball balls[NUM_BALLS];
-    //Platform platform;
+    Ball balls[NUM_BALLS];
+    Platform platform;
 
     // Audio
     Mix_Chunk *soundHitPlatform;

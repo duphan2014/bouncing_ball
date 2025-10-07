@@ -5,8 +5,9 @@ int audio_init() {
     // initialize audio
     if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) {
         printf("SDL_mixer could not initialize! SDL_mixer Error: %s\n", Mix_GetError());
-        return 1;
+        return -1;
     }
+    return 1;
 }
 
 Mix_Chunk* audio_load_sound(const char* filename) {
