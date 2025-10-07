@@ -15,17 +15,17 @@ void platform_update(Platform *platform, int winWidth) {
         platform->vibrationTimer--;
 
         // Vibrate left and right
-        platform->x += (platform->vibrationTimer % 2 == 0) ? -2 : 2;
+        platform->x += (platform->vibrationTimer %2 == 0 ) ? -2 : 2;
 
         // Reduce bend gradually
         if (platform->bendOffset > 0) {
             platform->bendOffset--;
         }
     }
-    
+
     // Keep platform within window bounds
-    if (platform->x < 0) platform->x = 0;
-    if (platform->x + platform->width > winWidth) platform->x = winWidth - platform->width;
+    if (platform->x <0) platform->x = 0;
+    if (platform->x + platform->width > winWidth) platform->x = winWidth - platform-width;
 }
 
 void platform_handle_collision(Platform *platform) {
@@ -38,12 +38,12 @@ void platform_handle_input(Platform *platform, const Uint8 *keystate, int winWid
     if (keystate[SDL_SCANCODE_LEFT]) {
         platform->x -= platform->speed;
     }
-    
+
     if (keystate[SDL_SCANCODE_RIGHT]) {
         platform->x += platform->speed;
     }
 
-    // Keep platform within window bounds
-    if (platform->x < 0) platform->x = 0;
+    // keep platform within window bounds
+    if (platform->x <0) platform->x = 0;
     if (platform->x + platform->width > winWidth) platform->x = winWidth - platform->width;
 }

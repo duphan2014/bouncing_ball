@@ -161,57 +161,60 @@ int main(int argc, char* argv[]) {
     //if (e.type == SDL_KEYDOWN) {
     //  printf("Key pressed: %d\n", e.key.keysym.sym);
     //}
-
+    
     // quit game when click X button
     while (SDL_PollEvent(&e)) {
       if (e.type == SDL_QUIT) {
         running = 0;
       }
-    }
+    
 
-    // quit game when press escape
-    if (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_ESCAPE) {
-      running = 0;
-    }
-
-    // Start game, restart game
-    if (e.type == SDL_KEYDOWN && 
-      //e.key.keysym.sym == SDLK_RETURN) {
-      (e.key.keysym.sym == SDLK_RETURN || e.key.keysym.sym == SDLK_KP_ENTER)) {
-      if (gameState == STATE_START) {
-          gameState = STATE_PLAYING;
-          // Reset score, lives, balls, platform as needed
-      } else if (gameState == STATE_GAMEOVER) {
-          gameState = STATE_PLAYING;
-          score = 0;
-          lives = 5;
-          // Reset balls and platform positions as needed
+      // quit game when press escape
+      if (e.type == SDL_KEYDOWN && e.key.keysym.sym == SDLK_ESCAPE) {
+        running = 0;
       }
-    }
 
-    if(e.type == SDL_KEYDOWN) {
-      // Handle Alt+Enter for fullscreen toggle
-      if(e.key.keysym.sym == SDLK_RETURN && (e.key.keysym.mod & KMOD_ALT)) {
-        // Before resizing
-        //int oldWinWidth = winWidth;
-        //int oldWinHeight = winHeight;
-        Uint32 flags = SDL_GetWindowFlags(window);
-        if (flags & SDL_WINDOW_FULLSCREEN_DESKTOP) {
-          SDL_SetWindowFullscreen(window, 0); // Windowed
-          //for (int i = 0; i < NUM_BALLS; i++) {
-            // Scale position proportionally
-          //  balls[i].x = balls[i].x * winWidth / oldWinWidth;
-          //  balls[i].y = balls[i].y * winHeight / oldWinHeight;
-          //}
-        } else {
-          SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP); //FUllscreen
-        
+      // Start game, restart game
+      if (e.type == SDL_KEYDOWN && 
+        //e.key.keysym.sym == SDLK_RETURN) {
+        (e.key.keysym.sym == SDLK_RETURN || e.key.keysym.sym == SDLK_KP_ENTER)) {
+        printf("checkpoint 2");
+        if (gameState == STATE_START) {
+            printf("checkpoint 3");
+            gameState = STATE_PLAYING;
+            // Reset score, lives, balls, platform as needed
+        } else if (gameState == STATE_GAMEOVER) {
+            gameState = STATE_PLAYING;
+            score = 0;
+            lives = 5;
+            // Reset balls and platform positions as needed
         }
       }
-      // update window size variables
-      SDL_GetWindowSize(window, &winWidth, &winHeight);
-      // Update platform position to stay at the bottom
-      platform.y = winHeight - platform.height;
+
+      if(e.type == SDL_KEYDOWN) {
+        // Handle Alt+Enter for fullscreen toggle
+        if(e.key.keysym.sym == SDLK_RETURN && (e.key.keysym.mod & KMOD_ALT)) {
+          // Before resizing
+          //int oldWinWidth = winWidth;
+          //int oldWinHeight = winHeight;
+          Uint32 flags = SDL_GetWindowFlags(window);
+          if (flags & SDL_WINDOW_FULLSCREEN_DESKTOP) {
+            SDL_SetWindowFullscreen(window, 0); // Windowed
+            //for (int i = 0; i < NUM_BALLS; i++) {
+              // Scale position proportionally
+            //  balls[i].x = balls[i].x * winWidth / oldWinWidth;
+            //  balls[i].y = balls[i].y * winHeight / oldWinHeight;
+            //}
+          } else {
+            SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP); //FUllscreen
+          
+          }
+        }
+        // update window size variables
+        SDL_GetWindowSize(window, &winWidth, &winHeight);
+        // Update platform position to stay at the bottom
+        platform.y = winHeight - platform.height;
+      }
     }
 
     if (gameState == STATE_PLAYING) {

@@ -8,7 +8,9 @@
 #else
 #error "Unsupported platform"
 #endif
+#include "game.h"
 
-void input_handle_event(SDL_Event* event);
+void input_handle_events(struct Game *game, SDL_Event* event);
+void input_handle_keyboard(struct Game *game, const Uint8 *keystate);
 
-#endif
+#endif // INPUT_H

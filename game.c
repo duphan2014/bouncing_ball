@@ -9,7 +9,7 @@
 
 int game_init(Game *game) {
     srand(time(NULL));
-    
+
     // Initialize SDL
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
         printf("SDL could not initialize! SDL_Error: %s\n", SDL_GetError());
@@ -29,33 +29,34 @@ int game_init(Game *game) {
         return -1;
     }
 
+    // ===== SOUND =====
     // Initialize audio
     if (audio_init() < 0) {
         return -1;
     }
 
     // Load sounds
-    game->soundHitPlatform = audio_load_sound("sounds/boing_x.wav");
+    game->soundHitPlatform = audio_load_sound("sound/boing_x.wav");
     game->soundHitBottom = audio_load_sound("sounds/blip.wav");
     game->soundGameOver = audio_load_sound("sounds/floop2_x.wav");
 
+    // ==== WINDOW =====
     // Initialize window dimensions
     game->winWidth = WINDOW_WIDTH;
     game->winHeight = WINDOW_HEIGHT;
 
     // Create window
-    game->window = SDL_CreateWindow("Gnuash - Modular Version",
-                                  SDL_WINDOWPOS_CENTERED,
-                                  SDL_WINDOWPOS_CENTERED,
-                                  game->winWidth, game->winHeight,
-                                  SDL_WINDOW_SHOWN);
-
+    game->window = SDL_CreateWindow("Gnuash",
+                                    SDL_WINDOWPOS_CENTERED,
+                                    SDL_WINDOWPOS_CENTERED,
+                                    game->winWidth, game->winHeight,
+                                    SDL_WINDOW_SHOWN);
     if (!game->window) {
         printf("Window could not be created! SDL_Error: %s\n", SDL_GetError());
         return -1;
     }
 
-    // Create renderer
+    // create renderer
     game->renderer = SDL_CreateRenderer(game->window, -1, SDL_RENDERER_ACCELERATED);
     if (!game->renderer) {
         printf("Renderer could not be created! SDL_Error: %s\n", SDL_GetError());
@@ -71,17 +72,16 @@ int game_init(Game *game) {
     game->score = 0;
     game->lives = 5;
     game->running = 1;
-    
+
     // Load high score
     game_load_highscore(game);
 
     // Initialize game objects
-    ball_init_array(game->balls, NUM_BALLS);
+    ball_init_array(game->balls, NUM_BALLS); // balls ia already an array, which decays to a pointer. pass address of first element.
     platform_init(&game->platform, game->winWidth, game->winHeight);
 
     return 0;
 }
-
 void game_cleanup(Game *game) {
     // Clean up audio
     audio_free_sound(game->soundHitPlatform);
@@ -92,40 +92,41 @@ void game_cleanup(Game *game) {
     // Clean up SDL
     if (game->renderer) SDL_DestroyRenderer(game->renderer);
     if (game->window) SDL_DestroyWindow(game->window);
-    
+
     // Clean up TTF
     if (game->font) TTF_CloseFont(game->font);
     TTF_Quit();
-    
-    SDL_Quit();
-}
 
+    SDL_Quit();
+
+}
 void game_run(Game *game) {
     SDL_Event event;
-    
-    while (game->running) {
+
+    while(game->running) {
         input_handle_events(game, &event);
-        
+
         const Uint8 *keystate = SDL_GetKeyboardState(NULL);
         input_handle_keyboard(game, keystate);
-        
+
         game_update(game);
         game_render(game);
-        
+
         // Delay to control frame rate (16ms ~ 60 FPS)
         SDL_Delay(16);
     }
-}
 
+}
 void game_update(Game *game) {
     if (game->state == STATE_PLAYING) {
-        // Update platform
+        // update platform, for visual effect bend vibrate or still
         platform_update(&game->platform, game->winWidth);
 
-        // Update balls and handle collisions
+        //update balls and handle collisions
         for (int i = 0; i < NUM_BALLS; i++) {
-            ball_update(&game->balls[i], game->winWidth, game->winHeight);
-            
+            //moving balls
+            ball_update(&game->balls[i]);
+
             int gameOver = 0;
             ball_handle_wall_collision(&game->balls[i], game->winWidth, game->winHeight, &game->lives, &gameOver);
             
@@ -134,8 +135,8 @@ void game_update(Game *game) {
                 game->state = STATE_GAMEOVER;
                 game_save_highscore(game);
             }
-            
-            // Handle bottom collision sound
+
+            // Handle bottom collision sound --> <TO BE REFACTOR>, currently ball_handle_wall_collision() only handle direction change
             if (game->balls[i].y + game->balls[i].radius >= game->winHeight) {
                 audio_play_sound(game->soundHitBottom);
             }
@@ -148,11 +149,10 @@ void game_update(Game *game) {
             }
         }
 
-        // Ball-to-ball collisions
+        // Ball-to-ball collisions, to divert their paths
         ball_handle_ball_collision(game->balls, NUM_BALLS);
     }
 }
-
 void game_render(Game *game) {
     // Set background color (black)
     SDL_SetRenderDrawColor(game->renderer, 0, 0, 0, 255);
@@ -179,14 +179,12 @@ void game_render(Game *game) {
     // Present everything
     SDL_RenderPresent(game->renderer);
 }
-
 void game_reset(Game *game) {
     game->score = 0;
     game->lives = 5;
     ball_init_array(game->balls, NUM_BALLS);
-    platform_init(&game->platform, game->winWidth, game->winHeight);
+    platform_init(&game->platform, game->winWidth, game->winHeight); //-> higher precedence than & so it means &(game->platform) aka get the address of the platform
 }
-
 void game_save_highscore(Game *game) {
     if (game->score > game->highScore) {
         game->highScore = game->score;
@@ -196,8 +194,8 @@ void game_save_highscore(Game *game) {
             fclose(f);
         }
     }
-}
 
+}
 void game_load_highscore(Game *game) {
     FILE *f = fopen("highscore.txt", "r");
     if (f) {

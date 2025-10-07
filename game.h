@@ -33,17 +33,17 @@ typedef struct {
     SDL_Window *window;
     SDL_Renderer *renderer;
     TTF_Font *font;
-    
+
     GameState state;
     int score;
     int lives;
     int highScore;
     int winWidth;
     int winHeight;
-    
-    Ball balls[NUM_BALLS];
-    Platform platform;
-    
+
+    //Ball balls[NUM_BALLS];
+    //Platform platform;
+
     // Audio
     Mix_Chunk *soundHitPlatform;
     Mix_Chunk *soundHitBottom;
@@ -52,14 +52,14 @@ typedef struct {
     int running;
 } Game;
 
-// Function declarations
+//Function declarations
 int game_init(Game *game);
-void game_cleanup(Game *game);
+void game_load_highscore(Game *game);
 void game_run(Game *game);
 void game_update(Game *game);
 void game_render(Game *game);
-void game_reset(Game *game);
 void game_save_highscore(Game *game);
-void game_load_highscore(Game *game);
+void game_reset(Game *game);
+void game_cleanup(Game *game);
 
 #endif // GAME_H

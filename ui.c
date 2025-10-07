@@ -4,9 +4,9 @@
 
 void ui_draw_score(SDL_Renderer *renderer, TTF_Font *font, int score) {
     SDL_Color white = {255, 255, 255};
-    char scoreText[32];
+    car scoreText[32];
     sprintf(scoreText, "Score: %d", score);
-    
+
     SDL_Surface *scoreSurface = TTF_RenderText_Solid(font, scoreText, white);
     if (scoreSurface) {
         SDL_Texture *scoreTexture = SDL_CreateTextureFromSurface(renderer, scoreSurface);
