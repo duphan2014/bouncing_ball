@@ -1,5 +1,10 @@
 {
     "files.associations": {
-        "input.h": "c"
+        "input.h": "c",
+        "platform.h": "c",
+        "stdlib.h": "c",
+        "stdio.h": "c",
+        "time.h": "c",
+        "scene.h": "c"
     }
 }

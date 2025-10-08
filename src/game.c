@@ -2,6 +2,8 @@
 #include "audio.h"
 #include "input.h"
 #include "renderer.h"
+#include "sprite.h"
+#include "scene.h"
 #include "ui.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -14,6 +16,12 @@ int game_init(Game *game) {
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
         printf("SDL could not initialize! SDL_Error: %s\n", SDL_GetError());
         return -1;
+    }
+
+    //InitializE Sprite
+    if (!(IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG)) {
+       printf("SDL_image could not initialize! SDL_image Error: %s\n", IMG_GetError());
+       return 1;
     }
 
     // Initialize TTF
@@ -67,6 +75,12 @@ int game_init(Game *game) {
     SDL_GetRendererInfo(game->renderer, &info);
     printf("SDL picked renderer: %s\n", info.name);
 
+    //Load sprite
+    // game->sprite =  sprite_load(game->renderer, "sprites/sprite.png", 0.1);
+    // if (!game->sprite) {
+    //    printf("Sprite failed to load!\n");
+    // }
+
     // Initialize game state
     game->state = STATE_START;
     game->score = 0;
@@ -79,6 +93,8 @@ int game_init(Game *game) {
     // Initialize game objects
     ball_init_array(game->balls, NUM_BALLS); // balls ia already an array, which decays to a pointer. pass address of first element.
     platform_init(&game->platform, game->winWidth, game->winHeight);
+
+    scene_init(game->scene, game->renderer);
 
     return 0;
 }
@@ -97,18 +113,20 @@ void game_cleanup(Game *game) {
     if (game->font) TTF_CloseFont(game->font);
     TTF_Quit();
 
-    SDL_Quit();
+    // Clean up sprite
+    sprite_free(game->sprite);
 
+    IMG_Quit();
+    SDL_Quit();
 }
+
 void game_run(Game *game) {
     SDL_Event event;
 
     while(game->running) {
         input_handle_events(game, &event);
-
         const Uint8 *keystate = SDL_GetKeyboardState(NULL);
         input_handle_keyboard(game, keystate);
-
         game_update(game);
         game_render(game);
 
@@ -156,6 +174,8 @@ void game_update(Game *game) {
 void game_render(Game *game) {
     // Set background color (black)
     SDL_SetRenderDrawColor(game->renderer, 0, 0, 0, 255);
+    // Set background color (sky blue)
+    //SDL_SetRenderDrawColor(game->renderer, 255, 255, 255, 255);
     SDL_RenderClear(game->renderer);
 
     // Draw balls
@@ -175,7 +195,12 @@ void game_render(Game *game) {
     } else if (game->state == STATE_GAMEOVER) {
         ui_draw_game_over_screen(game->renderer, game->font, game->winWidth, game->winHeight);
     }
-
+    
+    // draw sprite
+    //sprite_draw(game->renderer, game->sprite, 100, 100, game->sprite->width, game->sprite->height);
+    
+    //load_cloud(game);
+    scene_draw(&game->scene, game->renderer);
     // Present everything
     SDL_RenderPresent(game->renderer);
 }

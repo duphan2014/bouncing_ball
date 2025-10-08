@@ -5,13 +5,13 @@ CC = gcc
 CFLAGS = -Wall -g
 
 # Libraries to link
-LIBS = -lSDL2 -lSDL2_mixer -lSDL2_ttf
+LIBS = -lSDL2 -lSDL2_mixer -lSDL2_ttf -lSDL2_image
 
 # Output program name
 TARGET = gnuash
 
 # Source files
-SRCS = src/audio.c src/ball.c src/game.c src/input.c src/main.c src/platform.c src/renderer.c src/ui.c
+SRCS = src/audio.c src/ball.c src/game.c src/input.c src/main.c src/platform.c src/renderer.c src/ui.c src/sprite.c src/scene.c
 
 # Object files (replace .c with .o)
 OBJS = $(SRCS:.c=.o)
@@ -25,8 +25,8 @@ ifeq ($(UNAME_S),Linux)
 else ifeq ($(UNAME_S),Darwin)
     #SDL_CFLAGS := $(shell sdl2-config --cflags)
     #SDL_LIBS := $(shell sdl2-config --libs)
-	SDL_CFLAGS := $(shell pkg-config --cflags sdl2 SDL2_ttf SDL2_mixer)
-    SDL_LIBS := $(shell pkg-config --libs sdl2 SDL2_ttf SDL2_mixer)
+	SDL_CFLAGS := $(shell pkg-config --cflags sdl2 SDL2_ttf SDL2_mixer SDL2_image)
+    SDL_LIBS := $(shell pkg-config --libs sdl2 SDL2_ttf SDL2_mixer SDL2_image)
 endif
 
 # Default rule

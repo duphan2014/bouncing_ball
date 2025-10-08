@@ -5,16 +5,20 @@
 #include <SDL.h>
 #include <SDL_ttf.h>
 #include <SDL_mixer.h>
+#include <SDL_image.h>
 #elif defined(__linux__)
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_mixer.h>
 #include <SDL2/SDL_ttf.h>
+#include <SDL2/SDL_image.h>
 #else
 #error "Unsupported platform"
 #endif
 
 #include "ball.h"
 #include "platform.h"
+#include "sprite.h"
+#include "scene.h"
 
 // Game constants
 #define NUM_BALLS 5
@@ -33,6 +37,9 @@ typedef struct {
     SDL_Window *window;
     SDL_Renderer *renderer;
     TTF_Font *font;
+    Sprite *sprite;
+
+    Scene *scene;
 
     GameState state;
     int score;
