@@ -9,6 +9,7 @@
 #error "Unsupported platform"
 #endif
 #include "game.h"
+//#include "platform.h"
 
 void input_handle_events(Game *game, SDL_Event *event);
 void input_handle_keyboard(Game *game, const Uint8 *keystate);

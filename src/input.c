@@ -1,5 +1,4 @@
 #include "input.h"
-#include "platform.h"
 
 void input_handle_events (Game *game, SDL_Event *event) {
     // check for one-time event from th event queue
@@ -37,6 +36,9 @@ void input_handle_events (Game *game, SDL_Event *event) {
                 // Update platform position to stay at the bottom
                 game->platform.y = game->winHeight - game->platform.height;
                 
+                // Restart scene
+                scene_init_clouds(game->scene, game->renderer, game->winWidth, game->winHeight);
+
                 // Restart position of balls, otherwise hard to change them proportionally
                 ball_init_array(game->balls, NUM_BALLS);
             }

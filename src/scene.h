@@ -25,11 +25,13 @@ typedef struct {
     int cloud_count;
 } Scene;
 
-void scene_init(Scene* scene, SDL_Renderer* renderer);
+void scene_init(Scene* scene, SDL_Renderer* renderer, int winWidth, int winHeight);
+void scene_init_clouds(Scene* scene, SDL_Renderer* renderer, int winWidth, int winHeight);
 // void scene_draw(Scene* scene, SDL_Renderer* renderer);
 // void scene_free(Scene* scene);
 
 void scene_load_cloud(SDL_Renderer* renderer, Cloud* Cloud);
 void scene_draw(Scene* scene, SDL_Renderer* renderer);
+void scene_free(Scene* scene);
 
 #endif

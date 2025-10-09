@@ -90,11 +90,15 @@ int game_init(Game *game) {
     // Load high score
     game_load_highscore(game);
 
+    // Initialize scene. This will initialize on the heap
+    game->scene = malloc(sizeof(Scene));
+    scene_init(game->scene, game->renderer, game->winWidth, game->winHeight);
+
+    // or
+    //scene_init(&game->scene, game->renderer);
     // Initialize game objects
     ball_init_array(game->balls, NUM_BALLS); // balls ia already an array, which decays to a pointer. pass address of first element.
     platform_init(&game->platform, game->winWidth, game->winHeight);
-
-    scene_init(game->scene, game->renderer);
 
     return 0;
 }
@@ -114,7 +118,10 @@ void game_cleanup(Game *game) {
     TTF_Quit();
 
     // Clean up sprite
-    sprite_free(game->sprite);
+    // sprite_free(game->sprite);
+
+    // clean scene
+    if (game->scene) scene_free(game->scene);
 
     IMG_Quit();
     SDL_Quit();
@@ -178,6 +185,9 @@ void game_render(Game *game) {
     //SDL_SetRenderDrawColor(game->renderer, 255, 255, 255, 255);
     SDL_RenderClear(game->renderer);
 
+    // Draw scene e.g. clouds
+    scene_draw(game->scene, game->renderer);
+
     // Draw balls
     renderer_draw_balls(game->renderer, game->balls, NUM_BALLS);
 
@@ -199,8 +209,6 @@ void game_render(Game *game) {
     // draw sprite
     //sprite_draw(game->renderer, game->sprite, 100, 100, game->sprite->width, game->sprite->height);
     
-    //load_cloud(game);
-    scene_draw(&game->scene, game->renderer);
     // Present everything
     SDL_RenderPresent(game->renderer);
 }
