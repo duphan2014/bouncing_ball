@@ -20,8 +20,10 @@ OBJS = $(SRCS:.c=.o)
 UNAME_S := $(shell uname -s)
 
 ifeq ($(UNAME_S),Linux)
-    SDL_CFLAGS := 
-    SDL_LIBS := $(LIBS)
+    #SDL_CFLAGS := 
+    #SDL_LIBS := $(LIBS)
+	SDL_CFLAGS := $(shell pkg-config --cflags sdl2 SDL2_ttf SDL2_mixer SDL2_image)
+    SDL_LIBS := $(shell pkg-config --libs sdl2 SDL2_ttf SDL2_mixer SDL2_image)
 else ifeq ($(UNAME_S),Darwin)
     #SDL_CFLAGS := $(shell sdl2-config --cflags)
     #SDL_LIBS := $(shell sdl2-config --libs)
