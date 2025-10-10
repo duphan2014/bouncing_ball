@@ -21,6 +21,14 @@ void input_handle_events (Game *game, SDL_Event *event) {
                     game->state = STATE_PLAYING;
                 }
             }
+            //pause game
+            if (event->key.keysym.sym == SDLK_p) {
+                if (game->state == STATE_PLAYING) {
+                    game->state = STATE_PAUSE;
+                } else if (game->state == STATE_PAUSE) {
+                    game->state = STATE_PLAYING;
+                }
+            }
 
             // HANDLE ALT+ENTER for fullscreen toggle
             if (event->key.keysym.sym == SDLK_RETURN && (event->key.keysym.mod & KMOD_ALT)) {

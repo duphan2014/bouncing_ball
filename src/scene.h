@@ -33,5 +33,5 @@ void scene_init_clouds(Scene* scene, SDL_Renderer* renderer, int winWidth, int w
 void scene_load_cloud(SDL_Renderer* renderer, Cloud* Cloud);
 void scene_draw(Scene* scene, SDL_Renderer* renderer);
 void scene_free(Scene* scene);
-
+void scene_update_cloud(Scene* scene, int winWidth, int winHeight);
 #endif

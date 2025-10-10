@@ -136,7 +136,7 @@ void game_run(Game *game) {
         input_handle_keyboard(game, keystate);
         game_update(game);
         game_render(game);
-
+        scene_update_cloud(game->scene, game->winWidth, game->winHeight);
         // Delay to control frame rate (16ms ~ 60 FPS)
         SDL_Delay(16);
     }
@@ -176,6 +176,9 @@ void game_update(Game *game) {
 
         // Ball-to-ball collisions, to divert their paths
         ball_handle_ball_collision(game->balls, NUM_BALLS);
+
+        // cloud update - moving
+        scene_update_cloud(game->scene, game->winWidth, game->winHeight);
     }
 }
 void game_render(Game *game) {
@@ -204,6 +207,8 @@ void game_render(Game *game) {
         ui_draw_start_screen(game->renderer, game->font, game->winWidth, game->winHeight);
     } else if (game->state == STATE_GAMEOVER) {
         ui_draw_game_over_screen(game->renderer, game->font, game->winWidth, game->winHeight);
+    } else if (game->state == STATE_PAUSE) {
+        ui_draw_pause_screen(game->renderer, game->font, game->winWidth, game->winHeight);
     }
     
     // draw sprite
@@ -217,6 +222,7 @@ void game_reset(Game *game) {
     game->lives = 5;
     ball_init_array(game->balls, NUM_BALLS);
     platform_init(&game->platform, game->winWidth, game->winHeight); //-> higher precedence than & so it means &(game->platform) aka get the address of the platform
+    scene_init(game->scene, game->renderer, game->winWidth, game->winHeight);
 }
 void game_save_highscore(Game *game) {
     if (game->score > game->highScore) {

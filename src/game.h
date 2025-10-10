@@ -29,7 +29,8 @@
 typedef enum {
     STATE_START,
     STATE_PLAYING,
-    STATE_GAMEOVER
+    STATE_GAMEOVER,
+    STATE_PAUSE
 } GameState;
 
 // Game context structure
