@@ -63,6 +63,30 @@ void ui_draw_start_screen(SDL_Renderer *renderer, TTF_Font *font, int winWidth, 
     }
 }
 
+void ui_draw_pause_screen(SDL_Renderer *renderer, TTF_Font *font, int winWidth, int winHeight) {
+    SDL_Color white = {255, 255, 255};
+
+    // Title
+    SDL_Surface *titleSurface = TTF_RenderText_Solid(font, "PAUSED", white);
+    if (titleSurface) {
+        SDL_Texture *titleTexture = SDL_CreateTextureFromSurface(renderer, titleSurface);
+        SDL_Rect titleRect = {winWidth/2 - titleSurface->w/2, winHeight/2 - titleSurface->h*2, titleSurface->w, titleSurface->h};
+        SDL_RenderCopy(renderer, titleTexture, NULL, &titleRect);
+        SDL_FreeSurface(titleSurface);
+        SDL_DestroyTexture(titleTexture);
+    }
+
+    // Instructions
+    SDL_Surface *instructSurface = TTF_RenderText_Solid(font, "Press Enter to Continue", white);
+    if (instructSurface) {
+        SDL_Texture *instructTexture = SDL_CreateTextureFromSurface(renderer, instructSurface);
+        SDL_Rect instructRect = {winWidth/2 - instructSurface->w/2, winHeight/2 - instructSurface->h/2, instructSurface->w, instructSurface->h};
+        SDL_RenderCopy(renderer, instructTexture, NULL, &instructRect);
+        SDL_FreeSurface(instructSurface);
+        SDL_DestroyTexture(instructTexture);
+    }
+} 
+
 void ui_draw_game_over_screen(SDL_Renderer *renderer, TTF_Font *font, int winWidth, int winHeight) {
     SDL_Color white = {255, 255, 255};
 
